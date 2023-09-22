@@ -16,9 +16,9 @@ namespace net_ef_videogame
         public DateTime Release_date { get; set; }
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set;}
-        public int Software_house_id { get; set; }
+        public long Software_house_id { get; set; }
 
-        public Videogame(long id, string name, string overview, DateTime release_date, DateTime created_at, DateTime updated_at, int software_house_id)
+        public Videogame(long id, string name, string overview, DateTime release_date, DateTime created_at, DateTime updated_at, long software_house_id)
         {
             Id = id;
             Name = name;
@@ -31,7 +31,7 @@ namespace net_ef_videogame
 
         public override string ToString()
         {
-            return $"ID: {Id}, {Name} {Overview} -- {Release_date}";
+            return $"ID: {Id}, {Name} -- {Overview} -- {Release_date}";
         }
     }          
    

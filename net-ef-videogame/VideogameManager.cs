@@ -16,7 +16,7 @@ namespace net_ef_videogame
 
         // CREATE VIDEOGAME
 
-        public static bool AddVideogame(Videogame videogame)
+        public static bool CreateVideogame(Videogame videogame)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -77,11 +77,11 @@ namespace net_ef_videogame
                             //
                             //        Videogame videogame = new Videogame(Id, name, overview, releaseDate, softwareHouseId);
                             //
-                            //        return videogame;
+                            //        return videogame;     METODO ALTERNATIVO
                            
                                 while (data.Read())
                             {
-                                Videogame videogameReaded = new Videogame(data.GetInt32(0), data.GetString(1), data.GetString(2), data.GetDateTime(3), data.GetDateTime(4), data.GetDateTime(5), data.GetInt32(6));
+                                Videogame videogameReaded = new Videogame(data.GetInt64(0), data.GetString(1), data.GetString(2), data.GetDateTime(3), data.GetDateTime(4), data.GetDateTime(5), data.GetInt64(6));
                                 videogames.Add(videogameReaded);
                             }
                         }
@@ -95,6 +95,81 @@ namespace net_ef_videogame
         }
 
         // VIDEOGAME BY STRING
+        public static List<Videogame> GetVideogamesByString(string name)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
 
+                    string query = "SELECT id, name, overview, release_date, software_house_id FROM videogames WHERE name LIKE @name";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@name", name);
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            List<Videogame> videogames = new List<Videogame>();
+
+                            while (reader.Read())
+                            {
+                                long Id = reader.GetInt64(0);
+                                string gameName = reader.GetString(1);
+                                string overview = reader.GetString(2);
+                                DateTime releaseDate = reader.GetDateTime(3);
+                                long softwareHouseId = reader.GetInt64(4);
+
+                                Videogame videogame = new Videogame(Id, gameName, overview, releaseDate, softwareHouseId);
+                                videogames.Add(videogame);
+                            }
+
+                            return videogames;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+
+            return null;
+
+            // DELETE VIDEOGAME
+
+            public static bool DeleteVideogame(long deletegameid)
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+
+                    try
+                    {
+                        connection.Open();
+
+                        string query = "DELETE  FROM videogames WHERE id=@Id";
+
+                        SqlCommand cmd = new SqlCommand(query, connection);
+                        cmd.Parameters.Add(new SqlParameter("@Id", deletegameid));
+
+
+                        int rowsAffected = cmd.ExecuteNonQuery();
+
+                        if (rowsAffected > 0)
+                        {
+                            return true;
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+
+                    return false;
+
+                }
+            }
     }
 }

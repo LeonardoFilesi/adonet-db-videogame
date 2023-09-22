@@ -20,12 +20,41 @@
 
                 switch (selectedOption)
                 {
-                    case 3:
-                        Console.WriteLine("Search game by id:");
-                        Console.WriteLine("Insert Videogame ID");
-                        long videogameIdToFind = long.Parse(Console.ReadLine());
+                    // CREATE VIDEOGAME
+                    case 1:
+                        {
+                            Console.WriteLine("Create a Videogame!");
+                            Console.WriteLine("Enter the title: ");
+                            string name = Console.ReadLine();
+                            Console.WriteLine("Enter an overview of the game: ");
+                            string overview = Console.ReadLine();
+                            Console.WriteLine("Enter release date: ");
+                            DateTime releasedate = DateTime.Parse(Console.ReadLine());
+                            Console.WriteLine("Enter software house id: ");
+                            long softwareHouseId = long.Parse(Console.ReadLine());
 
-                        List<Videogame> videogames = VideogameManager.GetVideogamesById();
+                            Videogame videogame = new Videogame(0, name, overview, releasedate, softwareHouseId);
+                            bool inserted = VideogameManager.CreateVideogame(videogame);
+
+                            if (inserted)
+                            {
+                                Console.WriteLine("Game created and added to the list!");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Game not created!");
+                            }
+
+                        }
+                        break;
+
+                    // SEARCH VIDEOGAME BY ID
+                    case 2:
+                        Console.WriteLine("Search game by id!");
+                        Console.WriteLine("Insert Videogame id:");
+                        long id = Convert.ToInt64(Console.ReadLine());
+
+                        List<Videogame> videogames = VideogameManager.GetVideogamesById(id);
 
                         foreach (Videogame videogame in videogames)
                         {
@@ -33,7 +62,50 @@
                         }
                         break;
                     default: 
-                        Console.WriteLine("Non hai selezionato un'opzione valida!");
+                        Console.WriteLine("No videogame found with your id, cheack the inserted id!!!");
+                        break;
+
+                    // SEARCH BY STRING
+                    case 3:
+                        {
+                            Console.WriteLine("Insert a string");
+                            string gamestring = Console.ReadLine();
+
+                            List<Videogame> videogames = VideogameManager.GetVideogamesByString($"%{gamestring}%");
+
+                            if (videogames != null && videogames.Count > 0)
+                            {
+                                Console.WriteLine("Research results:");
+
+                                foreach (Videogame videogame in videogames)
+                                {
+                                    Console.WriteLine(videogame.Name);
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("No game found.");
+                            }
+
+                            return;
+                        }
+
+                    // DELETE VIDEOGAME
+                    case 4:
+                        Console.Write("Insert the Game Id you want to delete: ");
+                        long deletegameid = long.Parse(Console.ReadLine());
+
+                        bool deleted = VideogameManager.DeleteVideogame(deletegameid);
+
+                        if (deleted)
+                        {
+                            Console.WriteLine("Your game was deleted!");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Your game is immortal!");
+                        }
+
                         break;
                 }
             }
