@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -50,22 +50,22 @@ namespace net_ef_videogame
         }
 
         // VIDEOGAME BY ID
-        public static List<Videogame> GetVideogamesById()
+        public static List<Videogame> GetVideogamesById(long id)
         {
             List<Videogame> videogames = new List<Videogame>();
-            using (SqlConnection connection = new SqlConnection(connectionString)) 
-            { 
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
                 try
-                {   
+                {
                     connection.Open();
 
                     string query = "SELECT id, name, overview, release_date, created_at, updated_at, software_house_id FROM videogames WHERE id = @id;";
-                    
-                    using(SqlCommand cmd = new SqlCommand(query, connection))
-                    {
-                        cmd.Parameters.AddWithValue("@id", videogame.id);
 
-                        using(SqlDataReader data = cmd.ExecuteReader())
+                    using (SqlCommand cmd = new SqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
+
+                        using (SqlDataReader data = cmd.ExecuteReader())
                         {
                             // if (reader.Read())
                             //    {
@@ -78,15 +78,16 @@ namespace net_ef_videogame
                             //        Videogame videogame = new Videogame(Id, name, overview, releaseDate, softwareHouseId);
                             //
                             //        return videogame;     METODO ALTERNATIVO
-                           
-                                while (data.Read())
+
+                            while (data.Read())
                             {
-                                Videogame videogameReaded = new Videogame(data.GetInt64(0), data.GetString(1), data.GetString(2), data.GetDateTime(3), data.GetDateTime(4), data.GetDateTime(5), data.GetInt64(6));
+                                Videogame videogameReaded = new Videogame(data.GetInt64(0), data.GetString(1), data.GetString(2), data.GetDateTime(3), data.GetInt64(4));
                                 videogames.Add(videogameReaded);
                             }
                         }
                     }
-                } catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
@@ -134,42 +135,40 @@ namespace net_ef_videogame
                     Console.WriteLine(ex.Message);
                 }
             }
-
             return null;
+        }
+        // DELETE VIDEOGAME
 
-            // DELETE VIDEOGAME
-
-            public static bool DeleteVideogame(long deletegameid)
+        public static bool DeleteVideogame(long deletegameid)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+
+                try
                 {
+                    connection.Open();
 
-                    try
+                    string query = "DELETE  FROM videogames WHERE id=@Id";
+
+                    SqlCommand cmd = new SqlCommand(query, connection);
+                    cmd.Parameters.Add(new SqlParameter("@Id", deletegameid));
+
+
+                    int rowsAffected = cmd.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
                     {
-                        connection.Open();
-
-                        string query = "DELETE  FROM videogames WHERE id=@Id";
-
-                        SqlCommand cmd = new SqlCommand(query, connection);
-                        cmd.Parameters.Add(new SqlParameter("@Id", deletegameid));
-
-
-                        int rowsAffected = cmd.ExecuteNonQuery();
-
-                        if (rowsAffected > 0)
-                        {
-                            return true;
-                        }
-
+                        return true;
                     }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-
-                    return false;
 
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
+                return false;
             }
+        }
     }
 }
