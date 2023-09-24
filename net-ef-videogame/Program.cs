@@ -1,11 +1,11 @@
-﻿namespace net_ef_videogame
+namespace net_ef_videogame
 {
     internal class Program
     {
         static void Main(string[] args)
         {
             Console.WriteLine("Benvenuto nel nostro sistema di gestione del catalogo videogiochi");
-            while(true)
+            while (true)
             {
                 Console.WriteLine("Seleziona l'opzione desiderata:");
                 Console.WriteLine(@"
@@ -50,6 +50,7 @@
 
                     // SEARCH VIDEOGAME BY ID
                     case 2:
+                        {
                         Console.WriteLine("Search game by id!");
                         Console.WriteLine("Insert Videogame id:");
                         long id = Convert.ToInt64(Console.ReadLine());
@@ -61,7 +62,8 @@
                             Console.WriteLine($"- {videogame}");
                         }
                         break;
-                    default: 
+                        }
+                    default:
                         Console.WriteLine("No videogame found with your id, cheack the inserted id!!!");
                         break;
 
